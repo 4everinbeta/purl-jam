@@ -11,6 +11,7 @@ jobs:
     env:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+      RAILWAY_SERVICE_SQLSERVER: ${{ secrets.RAILWAY_SERVICE_SQLSERVER }}
       RAILWAY_SERVICE_NOPCOMMERCE: ${{ secrets.RAILWAY_SERVICE_NOPCOMMERCE }}
     steps:
       - name: Checkout
@@ -23,6 +24,9 @@ jobs:
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
+
+      - name: Deploy SQL Server
+        run: railway up --service "$RAILWAY_SERVICE_SQLSERVER" --path railway/sqlserver
 
       - name: Deploy nopCommerce
         run: railway up --service "$RAILWAY_SERVICE_NOPCOMMERCE" --path .
