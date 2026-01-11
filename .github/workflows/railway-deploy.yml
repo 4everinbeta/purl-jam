@@ -26,7 +26,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy SQL Server
-        run: railway up --service "$RAILWAY_SERVICE_SQLSERVER" --path railway/sqlserver
+        run: railway up --service "$RAILWAY_SERVICE_SQLSERVER" --path-as-root railway/sqlserver
 
       - name: Deploy nopCommerce
-        run: railway up --service "$RAILWAY_SERVICE_NOPCOMMERCE" --path .
+        run: railway up --service "$RAILWAY_SERVICE_NOPCOMMERCE" --path-as-root .
