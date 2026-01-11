@@ -1,0 +1,342 @@
+@{ Layout = null; }
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Purl Jam | Modern Fiber Studio</title>
+    <meta
+      name="description"
+      content="Purl Jam is a modern fiber studio for knitting, crochet, and creative community. Shop curated yarn, join a class, and stitch with us."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/Themes/PurlJam/Content/styles.css" />
+  </head>
+  <body>
+    <!-- Navigation -->
+    <header class="site-header">
+      <div class="container nav">
+        <a class="logo" href="#home" aria-label="Purl Jam home">
+          <img src="/Themes/PurlJam/Content/brand/logo_set.png" alt="Purl Jam logo" />
+        </a>
+        <button class="icon-button mobile-toggle" id="mobile-toggle" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+        <nav class="nav-links" id="nav-links" aria-label="Primary">
+          <a href="#home">Home</a>
+          <a href="#shop">Shop</a>
+          <a href="#classes">Classes</a>
+          <a href="#about">About</a>
+          <a href="#blog">Blog</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-actions">
+          <div class="search-bar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.4" />
+              <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+            </svg>
+            <input id="nav-search" type="search" placeholder="Search yarn, tools, or fibers" aria-label="Search products" />
+          </div>
+          <a class="button button-secondary" href="#classes">Book a Class</a>
+          <button class="icon-button cart-button" id="cart-toggle" aria-label="Open cart">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M6 6h14l-1.5 9H8L6 6zM6 6H4M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span class="cart-count" id="cart-count">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section id="home" class="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Modern fiber studio · Asheville, NC</p>
+            <h1>Pull up a chair and stitch with us.</h1>
+            <p class="lead">
+              Purl Jam is a calm, creative space for knitters and crocheters of every level. Explore curated yarn,
+              tools, and classes built around community.
+            </p>
+            <div class="hero-actions">
+              <a class="button" href="#shop">Shop the Yarn Wall</a>
+              <a class="button button-secondary" href="#classes">View Classes</a>
+            </div>
+          </div>
+          <div class="hero-visual" role="img" aria-label="Hands knitting in natural light"></div>
+        </div>
+      </section>
+
+      <!-- Featured products -->
+      <section class="section" aria-labelledby="featured-title">
+        <div class="container">
+          <div class="section-heading">
+            <h2 id="featured-title">Featured yarns</h2>
+            <p>Our current favorites for mindful making, refreshed weekly.</p>
+          </div>
+          <div class="product-grid" id="featured-products" data-grid="featured"></div>
+        </div>
+      </section>
+
+      <!-- Upcoming classes callout -->
+      <section id="classes" class="section section-sage">
+        <div class="container callout">
+          <div>
+            <h2>Upcoming class: Colorwork Foundations</h2>
+            <p class="callout-meta">Thursday, Oct 10 · 6:30 PM · Studio Loft</p>
+            <p>
+              Learn to read charts, manage floats, and build a confident color story with guidance from our resident
+              instructors.
+            </p>
+          </div>
+          <a class="button" href="#classes">Reserve your seat</a>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="section">
+        <div class="container about-grid">
+          <div>
+            <h2>Meet the sisters behind Purl Jam</h2>
+            <p>
+              Andrea and Leah only recently fell head-over-heels for yarn and crochet. The obsession stuck fast, and now
+              they are building Purl Jam to share that spark in fun, creative ways.
+            </p>
+            <p>
+              Whether you are picking up your first hook or perfecting a sweater, you will find expert guidance,
+              thoughtful materials, and a calm place to create.
+            </p>
+          </div>
+          <div class="about-card">
+            <img
+              src="/Themes/PurlJam/Content/references/lifestyle/lifestyle_6_knitting_hands_natural_light.jpg"
+              alt="Knitting in natural light"
+            />
+            <div>
+              <h3>Studio Hours</h3>
+              <ul>
+                <li>Mon-Thu: 10a-7p</li>
+                <li>Fri-Sat: 10a-6p</li>
+                <li>Sun: 12p-5p</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Shop page -->
+      <section id="shop" class="section shop">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Shop the yarn wall</h2>
+            <p>Browse boutique yarns, tools, and essentials. Filters and search update in real time.</p>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters">
+            <div>
+              <h3>Color</h3>
+              <div class="filter-group" id="color-filters"></div>
+            </div>
+            <div>
+              <h3>Fiber</h3>
+              <div class="filter-group" id="fiber-filters"></div>
+            </div>
+          </div>
+
+          <!-- Product grid setup -->
+          <div class="product-grid" id="shop-products" data-grid="shop"></div>
+        </div>
+      </section>
+
+      <!-- Blog -->
+      <section id="blog" class="section">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Journal from the studio</h2>
+            <p>Notes on fiber care, pattern inspiration, and community stories.</p>
+          </div>
+          <div class="blog-grid">
+            <article class="card">
+              <h3>Choosing the right yarn for drape</h3>
+              <p>Tips for pairing fiber and gauge with your next project.</p>
+              <a class="text-link" href="#blog">Read more</a>
+            </article>
+            <article class="card">
+              <h3>How we plan a color story</h3>
+              <p>Our process for building calm, modern palettes.</p>
+              <a class="text-link" href="#blog">Read more</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Newsletter -->
+      <section class="section newsletter">
+        <div class="container newsletter-grid">
+          <div>
+            <h2>Stay in the loop</h2>
+            <p>Get class updates, yarn drops, and monthly stitch challenges.</p>
+          </div>
+          <form class="newsletter-form" aria-label="Newsletter signup">
+            <label class="sr-only" for="email">Email address</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+            <button class="button" type="submit">Join the Newsletter</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="section">
+        <div class="container contact-grid">
+          <div>
+            <h2>Contact</h2>
+            <p>hello@purljam.com · (828) 555-0184</p>
+            <p>214 Linden Lane · Asheville, NC</p>
+          </div>
+          <div class="contact-card">
+            <img src="/Themes/PurlJam/Content/references/lifestyle/lifestyle_11_crochet_hands_neutral_tones.jpg" alt="Crochet in neutral tones" />
+            <div>
+              <h3>Need help choosing a fiber?</h3>
+              <p>Send us a note and we will match you with the right yarn and tools.</p>
+              <a class="button button-secondary" href="#contact">Send a message</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mock checkout page -->
+      <section id="checkout" class="section checkout">
+        <div class="container checkout-grid">
+          <div>
+            <h2>Checkout</h2>
+            <p>Complete your demo order. No payment information is collected.</p>
+            <form class="checkout-form">
+              <label>
+                Full name
+                <input type="text" name="name" placeholder="Avery Brooks" required />
+              </label>
+              <label>
+                Email address
+                <input type="email" name="email" placeholder="avery@email.com" required />
+              </label>
+              <label>
+                Shipping address
+                <input type="text" name="address" placeholder="214 Linden Lane" required />
+              </label>
+              <div class="checkout-row">
+                <label>
+                  City
+                  <input type="text" name="city" placeholder="Asheville" required />
+                </label>
+                <label>
+                  ZIP
+                  <input type="text" name="zip" placeholder="28801" required />
+                </label>
+              </div>
+              <label>
+                Delivery notes
+                <input type="text" name="notes" placeholder="Leave at the front desk." />
+              </label>
+              <button class="button" type="submit">Place Demo Order</button>
+            </form>
+          </div>
+          <aside class="order-summary">
+            <h3>Order summary</h3>
+            <div class="summary-line">
+              <span>Subtotal</span>
+              <span id="summary-subtotal">$0</span>
+            </div>
+            <div class="summary-line">
+              <span>Estimated shipping</span>
+              <span>$6</span>
+            </div>
+            <div class="summary-line total">
+              <span>Total</span>
+              <span id="summary-total">$6</span>
+            </div>
+            <p class="summary-note">Demo checkout only.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <h3>Purl Jam</h3>
+          <p>Modern fiber studio · Asheville, NC</p>
+          <p>hello@purljam.com · (828) 555-0184</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <a href="#home">Home</a>
+          <a href="#shop">Shop</a>
+          <a href="#classes">Classes</a>
+          <a href="#about">About</a>
+        </div>
+        <div>
+          <h4>Community</h4>
+          <a href="#blog">Blog</a>
+          <a href="#contact">Contact</a>
+          <a href="#newsletter">Newsletter</a>
+        </div>
+        <div>
+          <h4>Follow</h4>
+          <a href="#">Instagram</a>
+          <a href="#">Pinterest</a>
+          <a href="#">TikTok</a>
+        </div>
+      </div>
+      <p class="footer-note">© 2024 Purl Jam. All rights reserved.</p>
+    </footer>
+
+    <!-- Cart drawer -->
+    <div class="overlay" id="overlay" hidden></div>
+    <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping cart" aria-hidden="true">
+      <div class="cart-header">
+        <h3>Your cart</h3>
+        <button class="button button-secondary" id="cart-close" type="button">Close</button>
+      </div>
+      <div class="cart-items" id="cart-items"></div>
+      <div class="cart-footer">
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <span id="cart-subtotal">$0</span>
+        </div>
+        <button class="button" id="cart-checkout" type="button">Continue to Checkout</button>
+      </div>
+    </aside>
+
+    <!-- Product detail modal -->
+    <div class="modal" id="product-modal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button class="icon-button modal-close" id="modal-close" aria-label="Close product details">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6l-12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div class="modal-content" id="modal-content"></div>
+      </div>
+    </div>
+
+    <script src="/Themes/PurlJam/Content/app.js"></script>
+  </body>
+</html>

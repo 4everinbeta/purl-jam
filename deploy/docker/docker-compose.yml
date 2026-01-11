@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: purljam-sqlserver
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+      SA_PASSWORD: "${SA_PASSWORD}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  nopcommerce:
+    image: nopcommerceteam/nopcommerce:latest
+    container_name: purljam-nopcommerce
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      CONNECTIONSTRINGS__DEFAULTCONNECTION: "Server=sqlserver;Database=nopCommerce;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      NOPCOMMERCE_URL: "https://localhost"
+      NopCommerce__StoreUrl: "https://localhost"
+    depends_on:
+      - sqlserver
+    volumes:
+      - nop_data:/app/App_Data
+      - ./themes/PurlJam:/app/Themes/PurlJam
+    expose:
+      - "80"
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: purljam-nginx
+    restart: unless-stopped
+    depends_on:
+      - nopcommerce
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../certs/tls.crt:/etc/nginx/certs/tls.crt:ro
+      - ../certs/tls.key:/etc/nginx/certs/tls.key:ro
+
+volumes:
+  sql_data:
+  nop_data:
