@@ -6,5 +6,11 @@ nopcomm*.jpeg
 demo-image-load.py
 references/
 brand/
+deploy/
 unsplash_config.json
 unsplash_config.example.json
+__pycache__/
+.venv/
+.git/
+staticfiles/
+media/

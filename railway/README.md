@@ -1,34 +1,28 @@
-# Railway deployment notes
+# Railway deployment notes (Django Oscar)
 
-This repo is set up for two Railway services:
+This repo deploys a Django Oscar storefront to Railway using a managed Postgres add-on.
 
-1) `sqlserver` (Docker image: SQL Server Express)
-2) `nopcommerce` (Docker image built from repo root, theme baked in)
+## Railway setup
 
-## Required Railway service settings
+1) Create a Railway project.
+2) Add a **PostgreSQL** plugin to the project.
+3) Create a service for the app (Dockerfile at repo root).
 
-Create a Railway project and two services, then add these env vars:
+Railway will inject `DATABASE_URL` into the app service automatically when the Postgres plugin
+is attached to the project.
 
-### sqlserver service
-- `SA_PASSWORD` (strong password, 8+ chars with upper/lower/number/symbol)
+## Required environment variables (app service)
 
-If you have Railway volumes, mount one to `/var/opt/mssql` to persist the DB.
-
-### nopcommerce service
-- `SA_PASSWORD` (same as sqlserver)
-- `CONNECTIONSTRINGS__DEFAULTCONNECTION`
-  - Example: `Server=${{RAILWAY_PRIVATE_DOMAIN}};Database=nopCommerce;User Id=sa;Password=YOUR_PASSWORD;TrustServerCertificate=True;`
-  - Use the private domain/host of the SQL Server service in Railway.
-- `NOPCOMMERCE_URL` (your public Railway URL, https)
-- `NopCommerce__StoreUrl` (same as above)
-- `ASPNETCORE_URLS` set to `http://+:$PORT`
+- `SECRET_KEY` (Django secret key)
+- `DEBUG` (set to `false` in production)
+- `ALLOWED_HOSTS` (comma-separated hostnames, or `*`)
+- `CSRF_TRUSTED_ORIGINS` (comma-separated https origins)
 
 ## GitHub Actions secrets
 
 Add these secrets in your GitHub repo:
 - `RAILWAY_TOKEN`
 - `RAILWAY_PROJECT_ID`
-- `RAILWAY_SERVICE_SQLSERVER`
-- `RAILWAY_SERVICE_NOPCOMMERCE`
+- `RAILWAY_SERVICE_APP`
 
-After that, pushes to `main` will deploy both services.
+After that, pushes to `main` will deploy the app service.
