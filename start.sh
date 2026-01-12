@@ -2,6 +2,6 @@
 set -euo pipefail
 
 python manage.py migrate --noinput
-python manage.py oscar_populate_countries --noinput || true
+python manage.py oscar_populate_countries --initial-only || true
 
 gunicorn purljam.wsgi:application --bind 0.0.0.0:${PORT:-8000}
