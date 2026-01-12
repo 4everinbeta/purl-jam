@@ -3,6 +3,7 @@ import os
 
 import dj_database_url
 from oscar import INSTALLED_APPS as OSCAR_INSTALLED_APPS
+from oscar import defaults as oscar_defaults
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -107,3 +108,8 @@ HAYSTACK_CONNECTIONS = {
         "ENGINE": "haystack.backends.simple_backend.SimpleEngine",
     }
 }
+
+# Ensure all OSCAR_* defaults are present to avoid AttributeError during startup.
+for name in dir(oscar_defaults):
+    if name.startswith("OSCAR_") and name not in globals():
+        globals()[name] = getattr(oscar_defaults, name)
