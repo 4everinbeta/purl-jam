@@ -92,6 +92,7 @@ OSCAR_SHOP_NAME = "Purl Jam"
 OSCAR_DEFAULT_CURRENCY = "USD"
 OSCAR_REQUIRED_ADDRESS_FIELDS = ("first_name", "last_name", "line1", "line4", "postcode", "country")
 OSCAR_DYNAMIC_CLASS_LOADER = "oscar.core.loading.default_class_loader"
+OSCAR_SLUG_ALLOW_UNICODE = False
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
