@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 
 import dj_database_url
-from oscar import get_core_apps
+from oscar import INSTALLED_APPS as OSCAR_INSTALLED_APPS
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,14 +13,8 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
     "whitenoise.runserver_nostatic",
-] + get_core_apps()
+] + list(OSCAR_INSTALLED_APPS)
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
