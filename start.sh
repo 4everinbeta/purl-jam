@@ -4,11 +4,13 @@ set -euo pipefail
 python manage.py migrate --noinput
 python manage.py oscar_populate_countries --initial-only || true
 
-exec gunicorn purljam.simple_wsgi:application \
+echo "PORT is set to: $PORT"
+
+exec gunicorn purljam.wsgi:application \
   --bind 0.0.0.0:${PORT:-8000} \
   --access-logfile - \
   --error-logfile - \
   --log-level debug \
   --workers 1 \
-  --threads 4 \
+  --threads 2 \
   --timeout 120
