@@ -8,4 +8,7 @@ exec gunicorn purljam.wsgi:application \
   --bind 0.0.0.0:${PORT:-8000} \
   --access-logfile - \
   --error-logfile - \
-  --log-level info
+  --log-level info \
+  --workers 2 \
+  --threads 4 \
+  --timeout 120
