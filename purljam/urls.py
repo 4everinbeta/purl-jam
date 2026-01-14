@@ -1,8 +1,6 @@
 from django.apps import apps
-from django.urls import path
-
-application = apps.get_app_config("oscar")
+from django.urls import include, path
 
 urlpatterns = [
-    path("", application.urls),
+    path("", include(apps.get_app_config("oscar").urls[0])),
 ]
