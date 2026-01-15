@@ -5,9 +5,12 @@ set -euo pipefail
 PORT="${PORT:-8000}"
 echo "Starting on PORT: $PORT"
 
+# Set Django settings module
+export DJANGO_SETTINGS_MODULE=purljam.settings
+
 # Check if we can import Django settings
 echo "Testing Django configuration..."
-python -c "import django; from django.conf import settings; django.setup(); print('Django OK')" || {
+python -c "import django; django.setup(); print('Django OK')" || {
   echo "Django configuration failed!"
   exit 1
 }
@@ -20,6 +23,7 @@ python manage.py oscar_populate_countries --initial-only || true
 # Start Gunicorn with preload to catch startup errors
 echo "Starting Gunicorn..."
 exec gunicorn purljam.wsgi:application \
+  --config /dev/null \
   --bind "0.0.0.0:$PORT" \
   --workers 1 \
   --worker-class sync \
