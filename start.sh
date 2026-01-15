@@ -5,16 +5,27 @@ set -euo pipefail
 PORT="${PORT:-8000}"
 echo "Starting on PORT: $PORT"
 
-# Run migrations (commented out for speed debugging)
-# python manage.py migrate --noinput
-# python manage.py oscar_populate_countries --initial-only || true
+# Check if we can import Django settings
+echo "Testing Django configuration..."
+python -c "import django; from django.conf import settings; django.setup(); print('Django OK')" || {
+  echo "Django configuration failed!"
+  exit 1
+}
 
+# Run migrations
+echo "Running migrations..."
+python manage.py migrate --noinput
+python manage.py oscar_populate_countries --initial-only || true
+
+# Start Gunicorn with preload to catch startup errors
+echo "Starting Gunicorn..."
 exec gunicorn purljam.wsgi:application \
   --bind "0.0.0.0:$PORT" \
   --workers 1 \
+  --worker-class sync \
+  --threads 1 \
   --timeout 120 \
-  --log-level debug \
+  --preload \
+  --log-level info \
   --access-logfile - \
-  --error-logfile - \
-  --capture-output \
-  --enable-stdio-inheritance
+  --error-logfile -
