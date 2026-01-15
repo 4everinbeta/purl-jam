@@ -24,4 +24,4 @@ ENV PORT=8000
 
 EXPOSE 8000
 
-CMD gunicorn purljam.wsgi:application --bind 0.0.0.0:${PORT:-8000} --log-level debug --access-logfile - --error-logfile - --workers 1 --threads 2 --timeout 120
+CMD ["bash", "start.sh"]

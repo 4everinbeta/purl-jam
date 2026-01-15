@@ -1,17 +1,21 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Ensure we have a port
+PORT="${PORT:-8000}"
+echo "Starting on PORT: $PORT"
+
+# Run migrations (commented out for speed debugging, but should be enabled)
 # python manage.py migrate --noinput
 # python manage.py oscar_populate_countries --initial-only || true
 
-echo "PORT is set to: $PORT"
-
 exec gunicorn purljam.wsgi:application \
-  --bind 0.0.0.0:${PORT:-8000} \
+  --bind "0.0.0.0:$PORT" \
+  --workers 1 \
+  --threads 2 \
+  --timeout 120 \
+  --log-level debug \
   --access-logfile - \
   --error-logfile - \
-  --log-level debug \
   --capture-output \
-  --workers 1 \
-  --threads 1 \
-  --timeout 120
+  --enable-stdio-inheritance
