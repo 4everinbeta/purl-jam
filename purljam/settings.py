@@ -10,7 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-insecure-secret-key")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
+# Railway health checks come from healthcheck.railway.app
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
+if "healthcheck.railway.app" not in ALLOWED_HOSTS and "*" not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append("healthcheck.railway.app")
 
 # Application definition
 INSTALLED_APPS = [
