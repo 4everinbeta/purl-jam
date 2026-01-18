@@ -95,18 +95,50 @@
         </div>
       </section>
 
-      <!-- Upcoming classes callout -->
+      <!-- Classes / Videos -->
       <section id="classes" class="section section-sage">
-        <div class="container callout">
-          <div>
-            <h2>Upcoming class: Colorwork Foundations</h2>
-            <p class="callout-meta">Thursday, Oct 10 · 6:30 PM · Studio Loft</p>
-            <p>
-              Learn to read charts, manage floats, and build a confident color story with guidance from our resident
-              instructors.
-            </p>
+        <div class="container">
+          <div class="section-heading">
+            <h2>Instructional Videos</h2>
+            <p>Learn new techniques with our resident instructors.</p>
           </div>
-          <a class="button" href="#classes">Reserve your seat</a>
+          
+          {% if videos %}
+          <div class="product-grid">
+            {% for video in videos %}
+            <article class="card video-card" style="cursor: pointer;" onclick="openVideoModal('{{ video.video_file.url }}', '{{ video.title|escapejs }}')">
+              {% if video.thumbnail %}
+              <img src="{{ video.thumbnail.url }}" alt="{{ video.title }}" style="height: 200px; object-fit: cover; width: 100%; border-radius: var(--radius-sm);" />
+              {% else %}
+              <div style="height: 200px; background: var(--sage); display: flex; align-items: center; justify-content: center; border-radius: var(--radius-sm);">
+                <svg viewBox="0 0 24 24" width="48" height="48" fill="var(--cream)">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              {% endif %}
+              <div style="padding-top: 12px;">
+                <h3>{{ video.title }}</h3>
+                <p>{{ video.description|truncatewords:20 }}</p>
+                {% if video.duration %}
+                <small style="color: var(--sage-dark); font-weight: 600;">{{ video.duration }}</small>
+                {% endif %}
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="callout">
+            <div>
+              <h2>Upcoming class: Colorwork Foundations</h2>
+              <p class="callout-meta">Thursday, Oct 10 · 6:30 PM · Studio Loft</p>
+              <p>
+                Learn to read charts, manage floats, and build a confident color story with guidance from our resident
+                instructors.
+              </p>
+            </div>
+            <a class="button" href="#classes">Reserve your seat</a>
+          </div>
+          {% endif %}
         </div>
       </section>
 
@@ -338,7 +370,47 @@
       </div>
     </div>
 
+    <!-- Video Modal -->
+    <div class="modal" id="video-modal" aria-hidden="true" onclick="closeVideoModal(event)">
+      <div class="modal-card" role="dialog" aria-modal="true" style="background: transparent; box-shadow: none; width: min(960px, 92vw);">
+        <button class="icon-button modal-close" onclick="closeVideoModal(event, true)" aria-label="Close video" style="background: var(--cream); position: absolute; top: -50px; right: 0;">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6l-12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div class="modal-content" style="grid-template-columns: 1fr;">
+          <video id="modal-video-player" controls style="width: 100%; border-radius: var(--radius-md); box-shadow: var(--shadow);">
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <h3 id="modal-video-title" style="color: var(--cream); text-align: center; margin-top: 1rem;"></h3>
+        </div>
+      </div>
+    </div>
+
     <script>
+      function openVideoModal(videoUrl, title) {
+        const modal = document.getElementById('video-modal');
+        const player = document.getElementById('modal-video-player');
+        const titleEl = document.getElementById('modal-video-title');
+        
+        player.src = videoUrl;
+        titleEl.textContent = title;
+        modal.classList.add('is-open');
+        player.play();
+      }
+
+      function closeVideoModal(event, force) {
+        if (force || event.target.id === 'video-modal') {
+          const modal = document.getElementById('video-modal');
+          const player = document.getElementById('modal-video-player');
+          
+          modal.classList.remove('is-open');
+          player.pause();
+          player.src = "";
+        }
+      }
+
       window.PURL_JAM_ASSET_BASE = "{% static '' %}";
     </script>
     <script src="{% static 'app.js' %}"></script>

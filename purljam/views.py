@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.db import connection
+from classes.models import InstructionalVideo
 import logging
 
 logger = logging.getLogger(__name__)
@@ -8,7 +9,8 @@ logger = logging.getLogger(__name__)
 
 def homepage(request):
     """Render the custom Purl Jam homepage"""
-    return render(request, 'oscar/index.html')
+    videos = InstructionalVideo.objects.all()
+    return render(request, 'oscar/index.html', {'videos': videos})
 
 
 def health(request):
