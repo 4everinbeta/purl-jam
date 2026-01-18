@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load product_tags %}
+
+{% if products %}
+<div style="margin-top: 3rem;">
+  <div class="section-heading">
+    <h2>{% trans "Recently Viewed" %}</h2>
+  </div>
+  <div class="product-grid">
+    {% for product in products %}
+      {% render_product product %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

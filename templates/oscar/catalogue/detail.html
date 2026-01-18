@@ -139,19 +139,7 @@
     {% endwith %}
 
     <!-- Recently Viewed -->
-    {% recently_viewed_products current_product=product as recent_products %}
-    {% if recent_products %}
-    <div style="margin-top: 3rem;">
-      <div class="section-heading">
-        <h2>{% trans "Recently Viewed" %}</h2>
-      </div>
-      <div class="product-grid">
-        {% for product in recent_products %}
-          {% render_product product %}
-        {% endfor %}
-      </div>
-    </div>
-    {% endif %}
+    {% recently_viewed_products current_product=product %}
 
   </div>
 </section>
