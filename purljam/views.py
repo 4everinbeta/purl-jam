@@ -1,8 +1,15 @@
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
 from django.db import connection
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def homepage(request):
+    """Render the custom Purl Jam homepage"""
+    return render(request, 'oscar/index.html')
+
 
 def health(request):
     """Health check endpoint that verifies database connectivity"""
