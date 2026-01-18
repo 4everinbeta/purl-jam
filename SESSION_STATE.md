@@ -1,10 +1,10 @@
 # Purl Jam Railway Deployment - Session State
 
 **Date:** 2026-01-18
-**Last Commit:** 53a3d75 - Fix basket item count template tag error
+**Last Commit:** 6f27958 - Update logo and favicon to use Purl_Jam_Primary_Logo.png
 
 ## Problem Summary
-Django e-commerce app (django-oscar) was building successfully on Railway but returning 502 errors initially. This was fixed, but then 500 errors were observed on the storefront due to a template error.
+Django e-commerce app (django-oscar) was building successfully on Railway but returning 502 errors initially. This was fixed, but then 500 errors were observed on the storefront due to a template error. After fixing functionality, visual assets (logo and favicon) needed correction.
 
 ## Issues Fixed (in order)
 
@@ -27,43 +27,37 @@ Django e-commerce app (django-oscar) was building successfully on Railway but re
 - **Commit:** 4d353e2
 
 ### 4. Template Syntax Error (FIXED)
-- **Problem:** Application returning HTTP 500 on pages using `layout.html` (including "Shop the yarn wall" button).
-- **Root Cause:** Invalid template tag `{% basket_add_item as basket %}` in `templates/oscar/layout.html`. The tag was not defined in `basket_tags`.
+- **Problem:** Application returning HTTP 500 on pages using `layout.html`.
+- **Root Cause:** Invalid template tag `{% basket_add_item as basket %}` in `templates/oscar/layout.html`.
 - **Solution:** Replaced with `{{ request.basket.num_items }}`.
 - **Commit:** 53a3d75
-- **Verification:**
-    - Deployment successful (logs show "Health check: OK").
-    - `/shop/catalogue/` returns HTTP 200.
-    - `/shop/basket/` returns HTTP 200.
+
+### 5. Incorrect Logo and Missing Favicon (FIXED)
+- **Problem:** Upper right logo was using `logo_set.png` (incorrect) and favicon was missing.
+- **Solution:** Updated `templates/oscar/layout.html` to use `Purl_Jam_Primary_Logo.png` and added favicon link in `templates/oscar/base.html`.
+- **Commit:** 6f27958 (JUST PUSHED)
 
 ## Current State
-- Application is live and stable.
-- Major critical issues resolved.
+- Code changes committed and pushed to Railway.
+- Waiting for deployment to complete (approx 2-3 mins).
+- Application should be fully functional and visually correct.
 
 ## Files Modified
 
 ### `/home/rbrown/workspace/purl-jam/templates/oscar/layout.html`
-- Replaced invalid `basket_add_item` tag with `request.basket`.
+- Updated logo `src` to `{% static 'brand/Purl_Jam_Primary_Logo.png' %}`.
+
+### `/home/rbrown/workspace/purl-jam/templates/oscar/base.html`
+- Added favicon `<link>` tag.
 
 ### `/home/rbrown/workspace/purl-jam/start.sh`
 - Complete rewrite with stderr logging
-- Non-fatal migrations
-- Django config validation
-- Improved gunicorn flags
 
 ### `/home/rbrown/workspace/purl-jam/purljam/settings.py`
 - Auto-adds `healthcheck.railway.app` to ALLOWED_HOSTS
-
-### `/home/rbrown/workspace/purl-jam/purljam/urls.py`
-- Supports both `/health` and `/health/` paths
-
-### `/home/rbrown/workspace/purl-jam/purljam/views.py`
-- Enhanced health check logging
 
 ### `/home/rbrown/workspace/purl-jam/railway.toml`
 - Removed `restartPolicyType = "never"` line
 
 ## Next Steps
-- Monitor for any other runtime errors.
-- Confirm with user if they see any other issues.
-- Access application at: https://purl-jam-production.up.railway.app
+- Verify visual changes at: https://purl-jam-production.up.railway.app
