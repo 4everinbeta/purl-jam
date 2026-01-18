@@ -38,6 +38,9 @@ fi
 log "Populating countries..."
 python manage.py oscar_populate_countries --initial-only 2>&1 || log "WARNING: Country population failed, continuing..."
 
+log "Populating products..."
+python populate_products.py 2>&1 || log "WARNING: Product population failed, continuing..."
+
 # Start Gunicorn
 log "Starting Gunicorn on 0.0.0.0:$PORT..."
 exec gunicorn purljam.wsgi:application \
