@@ -41,6 +41,9 @@ python manage.py oscar_populate_countries --initial-only 2>&1 || log "WARNING: C
 log "Populating products..."
 python populate_products.py 2>&1 || log "WARNING: Product population failed, continuing..."
 
+log "Clearing thumbnail cache..."
+python manage.py thumbnail clear 2>&1 || log "WARNING: Thumbnail cache clear failed, continuing..."
+
 # Start Gunicorn
 log "Starting Gunicorn on 0.0.0.0:$PORT..."
 exec gunicorn purljam.wsgi:application \
