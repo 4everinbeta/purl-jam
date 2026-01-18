@@ -4,8 +4,6 @@ cart1.png
 nopcomm*.png
 nopcomm*.jpeg
 demo-image-load.py
-references/
-brand/
 deploy/
 unsplash_config.json
 unsplash_config.example.json
