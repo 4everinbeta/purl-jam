@@ -88,6 +88,8 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+SITE_ID = 1
+
 AUTHENTICATION_BACKENDS = [
     "oscar.apps.customer.auth_backends.EmailBackend",
     "django.contrib.auth.backends.ModelBackend",
