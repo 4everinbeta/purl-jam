@@ -180,12 +180,24 @@ def populate():
             )
             print(f"  - Created stock record")
 
-            # Handle Image
+        # Handle Image (Check if exists on disk, restore if missing)
+        image_needs_restore = False
+        if product.primary_image:
+             if not os.path.exists(product.primary_image.original.path):
+                 print(f"  - Image record exists but file is missing: {product.primary_image.original.path}")
+                 image_needs_restore = True
+                 # Delete the broken record so we can create a clean one, or just update it?
+                 # Easier to delete and recreate to let Django handle file saving
+                 product.primary_image.delete() 
+        else:
+             image_needs_restore = True
+
+        if image_needs_restore:
             if os.path.exists(p_data['image_path']):
                 with open(p_data['image_path'], 'rb') as f:
                     im = ProductImage(product=product)
                     im.original.save(os.path.basename(p_data['image_path']), File(f), save=True)
-                    print(f"  - Added image")
+                    print(f"  - Restored/Added image")
             else:
                 print(f"  - WARNING: Image not found at {p_data['image_path']}")
 
