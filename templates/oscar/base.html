@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en" }}">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ shop_name }} | Modern Fiber Studio{% endblock %}</title>
+    <meta name="description" content="{% block description %}Purl Jam is a modern fiber studio for knitting, crochet, and creative community.{% endblock %}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    {% block styles %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}" />
+    {% endblock %}
+
+    {% block extrastyles %}{% endblock %}
+    {% block extrahead %}{% endblock %}
+  </head>
+
+  <body id="{% block body_id %}default{% endblock %}" class="{% block body_class %}{% endblock %}">
+    {% block layout %}{% endblock %}
+
+    {% block cdn_scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {% endblock %}
+
+    {% block scripts %}{% endblock %}
+    {% block extrascripts %}{% endblock %}
+
+    <script>
+      $(function() {
+        {% block onbodyload %}{% endblock %}
+      });
+    </script>
+  </body>
+</html>

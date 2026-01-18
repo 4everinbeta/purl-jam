@@ -1,0 +1,147 @@
+{% load i18n %}
+{% load image_tags %}
+{% load currency_filters %}
+{% load purchase_info_tags %}
+{% load widget_tweaks %}
+
+{% if basket_warnings %}
+  {% for warning in basket_warnings %}
+    <div class="card" style="margin-bottom: 1rem; padding: 1rem; border-left: 4px solid #e8a735;">{{ warning }}</div>
+  {% endfor %}
+{% endif %}
+
+{% if not basket.is_empty %}
+  <div class="checkout-grid">
+    <div>
+      <!-- Cart Items -->
+      <form method="post" class="basket_summary" id="basket_formset">
+        {% csrf_token %}
+        {{ formset.management_form }}
+
+        <div class="cart-items" style="display: grid; gap: 1rem;">
+          {% for form in formset %}
+            {% with line=form.instance product=form.instance.product %}
+              {% purchase_info_for_line request line as session %}
+              <div class="cart-item">
+                {{ form.id }}
+                <div class="cart-item-header">
+                  {% with image=product.primary_image %}
+                    {% oscar_thumbnail image.original "100x100" upscale=False as thumb %}
+                    <a href="{{ product.get_absolute_url }}">
+                      <img src="{{ thumb.url }}" alt="{{ product.get_title }}" style="width: 72px; height: 72px; object-fit: cover; border-radius: var(--radius-sm);" />
+                    </a>
+                  {% endwith %}
+                  <div>
+                    <h4><a href="{{ product.get_absolute_url }}">{{ line.description }}</a></h4>
+                    <p class="cart-meta">{{ session.availability.message }}</p>
+                  </div>
+                </div>
+                <div class="cart-item-row">
+                  <div class="qty-controls" style="display: flex; align-items: center; gap: 0.5rem;">
+                    {% render_field form.quantity style="width: 60px; padding: 8px; border-radius: var(--radius-sm); border: 1px solid rgba(47,47,47,0.2); text-align: center;" %}
+                    <button type="submit" class="button button-secondary" style="padding: 8px 12px;">{% trans "Update" %}</button>
+                  </div>
+                  <div class="cart-item-actions">
+                    <span class="price">
+                      {% if line.is_tax_known %}
+                        {{ line.line_price_incl_tax|currency:line.price_currency }}
+                      {% else %}
+                        {{ line.line_price_excl_tax|currency:line.price_currency }}
+                      {% endif %}
+                    </span>
+                    <a href="#" data-id="{{ forloop.counter0 }}" data-behaviours="remove" class="text-link" style="margin-left: 1rem;">{% trans "Remove" %}</a>
+                  </div>
+                </div>
+                <div style="display:none">
+                  {{ form.save_for_later }}
+                  {{ form.DELETE }}
+                </div>
+                {% for field_errors in form.errors.values %}
+                  {% for error in field_errors %}
+                    <p style="color: #c44; margin-top: 0.5rem;">{{ error }}</p>
+                  {% endfor %}
+                {% endfor %}
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      </form>
+
+      <!-- Voucher Code -->
+      {% if voucher_form %}
+        <div class="card" style="margin-top: 1.5rem;">
+          <p id="voucher_form_link">
+            <a href="#voucher" class="text-link">{% trans "Have a voucher code?" %}</a>
+          </p>
+          <div id="voucher_form_container" style="display:none; margin-top: 1rem;">
+            <form id="voucher_form" action="{% url 'basket:vouchers-add' %}" method="post" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              {% csrf_token %}
+              <input type="text" name="{{ voucher_form.code.name }}" placeholder="{% trans 'Enter code' %}" style="flex: 1; min-width: 150px; padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid rgba(47,47,47,0.2);" />
+              <button type="submit" class="button button-secondary">{% trans "Apply" %}</button>
+              <a href="#" id="voucher_form_cancel" class="text-link" style="align-self: center;">{% trans "Cancel" %}</a>
+            </form>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Order Summary -->
+    <aside class="order-summary">
+      <h3>{% trans "Order Summary" %}</h3>
+      {% include 'oscar/basket/partials/basket_totals.html' with editable=1 %}
+      <a href="{% url 'checkout:index' %}" class="button" style="width: 100%; text-align: center;">{% trans "Proceed to Checkout" %}</a>
+    </aside>
+  </div>
+
+{% else %}
+  <div class="card" style="text-align: center; padding: 3rem;">
+    <h3>{% trans "Your cart is calm and quiet" %}</h3>
+    <p style="margin: 1rem 0;">{% trans "Add something from the yarn wall." %}</p>
+    <a href="/shop/" class="button">{% trans "Continue Shopping" %}</a>
+  </div>
+{% endif %}
+
+{% if user.is_authenticated and saved_formset and saved_formset.forms %}
+  <div class="card" style="margin-top: 2rem;">
+    <h3 style="margin-bottom: 1rem;">{% trans "Saved for Later" %}</h3>
+    <form action="{% url 'basket:saved' %}" method="post" id="saved_basket_formset">
+      {% csrf_token %}
+      {{ saved_formset.management_form }}
+      {% for form in saved_formset %}
+        {% purchase_info_for_product request form.instance.product as session %}
+        <div class="cart-item">
+          {{ form.id }}
+          <div class="cart-item-header">
+            {% with image=form.instance.product.primary_image %}
+              {% oscar_thumbnail image.original "72x72" upscale=False as thumb %}
+              <a href="{{ form.instance.product.get_absolute_url }}">
+                <img src="{{ thumb.url }}" alt="{{ form.instance.product.get_title }}" style="width: 72px; height: 72px; object-fit: cover; border-radius: var(--radius-sm);" />
+              </a>
+            {% endwith %}
+            <div>
+              <h4><a href="{{ form.instance.product.get_absolute_url }}">{{ form.instance.description }}</a></h4>
+              <p class="cart-meta">{{ session.availability.message }}</p>
+            </div>
+          </div>
+          <div class="cart-item-row">
+            <span class="price">
+              {% if session.price.is_tax_known %}
+                {{ session.price.incl_tax|currency:session.price.currency }}
+              {% else %}
+                {{ session.price.excl_tax|currency:session.price.currency }}
+              {% endif %}
+            </span>
+            <div>
+              <a href="#" data-id="{{ forloop.counter0 }}" data-behaviours="move" class="button button-secondary" style="padding: 8px 12px;">{% trans "Move to Cart" %}</a>
+              <a href="#" data-id="{{ forloop.counter0 }}" data-behaviours="remove" class="text-link" style="margin-left: 0.5rem;">{% trans "Remove" %}</a>
+            </div>
+          </div>
+          <div style="display:none">
+            {{ form.move_to_basket }}
+            {{ form.DELETE }}
+          </div>
+        </div>
+      {% endfor %}
+    </form>
+  </div>
+{% endif %}

@@ -1,0 +1,68 @@
+{% extends "oscar/layout.html" %}
+
+{% load basket_tags %}
+{% load category_tags %}
+{% load product_tags %}
+{% load i18n %}
+
+{% block title %}
+  {% if summary %}{{ summary }} |{% endif %} {{ block.super }}
+{% endblock %}
+
+{% block content_wrapper %}
+<section class="section shop">
+  <div class="container">
+    <div class="section-heading">
+      <h2>{% if summary %}{{ summary }}{% else %}{% trans "Shop the yarn wall" %}{% endif %}</h2>
+      <p>{% trans "Browse boutique yarns, tools, and essentials." %}</p>
+    </div>
+
+    {% include "oscar/partials/alert_messages.html" %}
+
+    <!-- Categories / Filters -->
+    {% category_tree as tree_categories %}
+    {% if tree_categories %}
+    <div class="filters">
+      <div>
+        <h3>{% trans "Categories" %}</h3>
+        <div class="filter-group">
+          {% for tree_category in tree_categories %}
+            <a href="{{ tree_category.url }}" class="filter-chip {% if tree_category.pk == category.pk %}active{% endif %}">
+              {{ tree_category.name }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if products %}
+    <!-- Product Grid -->
+    <div class="product-grid">
+      {% for product in products %}
+        {% render_product product %}
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if paginator.num_pages > 1 %}
+    <div class="pagination-wrapper" style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="button button-secondary">{% trans "Previous" %}</a>
+      {% endif %}
+      <span style="padding: 12px 22px;">{% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="button button-secondary">{% trans "Next" %}</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="card" style="text-align: center; padding: 3rem;">
+      <h3>{% trans "No products found" %}</h3>
+      <p>{% trans "Check back soon for new arrivals!" %}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock content_wrapper %}

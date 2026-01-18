@@ -1,0 +1,158 @@
+{% extends "oscar/layout.html" %}
+
+{% load history_tags %}
+{% load currency_filters %}
+{% load reviews_tags %}
+{% load product_tags %}
+{% load display_tags %}
+{% load i18n %}
+{% load image_tags %}
+{% load purchase_info_tags %}
+{% load basket_tags %}
+
+{% block title %}
+  {{ product.get_meta_title }} | {{ block.super }}
+{% endblock %}
+
+{% block description %}
+  {{ product.get_meta_description }}
+{% endblock %}
+
+{% block content_wrapper %}
+<section class="section">
+  <div class="container">
+    {% include "oscar/partials/alert_messages.html" %}
+
+    <!-- Breadcrumb -->
+    <nav style="margin-bottom: 2rem;">
+      <a href="/" class="text-link">{% trans "Home" %}</a>
+      <span style="margin: 0 0.5rem;">/</span>
+      <a href="/shop/" class="text-link">{% trans "Shop" %}</a>
+      {% with category=product.get_categories.first %}
+        {% if category %}
+          <span style="margin: 0 0.5rem;">/</span>
+          <a href="{{ category.get_absolute_url }}" class="text-link">{{ category.name }}</a>
+        {% endif %}
+      {% endwith %}
+      <span style="margin: 0 0.5rem;">/</span>
+      <span>{{ product.get_title }}</span>
+    </nav>
+
+    <!-- Product Detail Card -->
+    <div class="card" style="padding: 0; overflow: hidden;">
+      <div class="modal-content" style="padding: 0;">
+        <!-- Product Image -->
+        <div>
+          {% with image=product.primary_image %}
+            {% oscar_thumbnail image.original "500x400" upscale=True crop="center" as thumb %}
+            <img src="{{ thumb.url }}" alt="{{ product.get_title }}" style="width: 100%; height: 400px; object-fit: cover;" />
+          {% endwith %}
+        </div>
+
+        <!-- Product Info -->
+        <div class="modal-actions" style="padding: 2rem;">
+          <h2 style="font-family: var(--serif); font-size: 2rem; margin-bottom: 1rem;">{{ product.get_title }}</h2>
+
+          {% if product.description %}
+            <p style="margin-bottom: 1.5rem;">{{ product.description|safe }}</p>
+          {% endif %}
+
+          {% purchase_info_for_product request product as session %}
+
+          {% if session.price.exists %}
+            <p class="price" style="font-size: 1.5rem; margin-bottom: 1rem;">
+              {% if session.price.excl_tax == 0 %}
+                {% trans "Free" %}
+              {% elif session.price.is_tax_known %}
+                {{ session.price.incl_tax|currency:session.price.currency }}
+              {% else %}
+                {{ session.price.excl_tax|currency:session.price.currency }}
+              {% endif %}
+            </p>
+          {% endif %}
+
+          <p style="margin-bottom: 1.5rem; color: {% if session.availability.is_available_to_buy %}var(--sage-dark){% else %}#c44{% endif %};">
+            {{ session.availability.message }}
+          </p>
+
+          {% if not product.is_parent %}
+            {% if session.availability.is_available_to_buy %}
+              {% basket_form request product as basket_form %}
+              <form action="{% url 'basket:add' pk=product.pk %}" method="post" style="display: grid; gap: 1rem;">
+                {% csrf_token %}
+                <label style="display: grid; gap: 0.5rem;">
+                  {% trans "Quantity" %}
+                  <input type="number" name="quantity" value="1" min="1" class="checkout-form" style="padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid rgba(47, 47, 47, 0.2); background: var(--cream);" />
+                </label>
+                <button type="submit" class="button">{% trans "Add to Cart" %}</button>
+              </form>
+            {% else %}
+              <span class="button button-secondary" style="opacity: 0.5; cursor: not-allowed; text-align: center;">{% trans "Out of Stock" %}</span>
+            {% endif %}
+          {% else %}
+            <!-- Product Variants -->
+            <div style="margin-top: 1rem;">
+              <h3>{% trans "Available Options:" %}</h3>
+              <div style="display: grid; gap: 0.5rem; margin-top: 1rem;">
+                {% for child in product.children.public %}
+                  {% purchase_info_for_product request child as child_session %}
+                  {% if child_session.availability.is_available_to_buy %}
+                    <a href="{{ child.get_absolute_url }}" class="button button-secondary">{{ child.get_title }}</a>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Attributes -->
+    {% if product.get_attribute_values %}
+    <div class="card" style="margin-top: 2rem;">
+      <h3 style="font-family: var(--serif); margin-bottom: 1rem;">{% trans "Product Details" %}</h3>
+      <div style="display: grid; gap: 0.75rem;">
+        {% for av in product.get_attribute_values %}
+          <div class="summary-line">
+            <span style="font-weight: 500;">{{ av.attribute.name }}</span>
+            <span>{{ av.value_as_html }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Recommended Products -->
+    {% with recommended_products=product.sorted_recommended_products|slice:":4" %}
+      {% if recommended_products %}
+      <div style="margin-top: 3rem;">
+        <div class="section-heading">
+          <h2>{% trans "You might also like" %}</h2>
+        </div>
+        <div class="product-grid">
+          {% for product in recommended_products %}
+            {% render_product product %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Recently Viewed -->
+    {% recently_viewed_products current_product=product as recent_products %}
+    {% if recent_products %}
+    <div style="margin-top: 3rem;">
+      <div class="section-heading">
+        <h2>{% trans "Recently Viewed" %}</h2>
+      </div>
+      <div class="product-grid">
+        {% for product in recent_products %}
+          {% render_product product %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock content_wrapper %}

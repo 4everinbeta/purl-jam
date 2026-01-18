@@ -1,0 +1,88 @@
+{% load i18n %}
+{% load currency_filters %}
+{% load shipping_tags %}
+
+<div id="basket_totals" style="display: grid; gap: 1rem;">
+  {% with offer_discounts=basket.offer_discounts voucher_discounts=basket.grouped_voucher_discounts %}
+
+    <!-- Subtotal -->
+    <div class="summary-line">
+      <span>{% trans "Subtotal" %}</span>
+      <span>
+        {% if basket.is_tax_known and not show_tax_separately %}
+          {{ basket.total_incl_tax|currency:basket.currency }}
+        {% else %}
+          {{ basket.total_excl_tax|currency:basket.currency }}
+        {% endif %}
+      </span>
+    </div>
+
+    <!-- Discounts -->
+    {% if offer_discounts or voucher_discounts %}
+      {% for discount in offer_discounts %}
+        <div class="summary-line" style="color: var(--sage-dark);">
+          <span>{% trans "Discount" %}: {{ discount.name }}</span>
+          <span>-{{ discount.discount|currency:basket.currency }}</span>
+        </div>
+      {% endfor %}
+
+      {% for discount in voucher_discounts %}
+        <div class="summary-line" style="color: var(--sage-dark);">
+          <span>{{ discount.voucher.code }}
+            {% if editable %}
+              <form action="{% url 'basket:vouchers-remove' pk=discount.voucher.id %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="text-link" style="font-size: 0.85rem;">({% trans "Remove" %})</button>
+              </form>
+            {% endif %}
+          </span>
+          <span>-{{ discount.discount|currency:basket.currency }}</span>
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Shipping -->
+    {% if shipping_method %}
+      <div class="summary-line">
+        <span>{% trans "Shipping" %} ({{ shipping_method.name }})</span>
+        <span>
+          {% if not show_tax_separately and shipping_charge.is_tax_known %}
+            {{ shipping_charge.incl_tax|currency:basket.currency }}
+          {% else %}
+            {{ shipping_charge.excl_tax|currency:basket.currency }}
+          {% endif %}
+        </span>
+      </div>
+    {% else %}
+      <div class="summary-line">
+        <span>{% trans "Shipping" %}</span>
+        <span>{% trans "Calculated at checkout" %}</span>
+      </div>
+    {% endif %}
+
+    <!-- Tax (if shown separately) -->
+    {% if show_tax_separately %}
+      <div class="summary-line">
+        <span>{% trans "Tax" %}</span>
+        <span>{{ basket.total_tax|currency:basket.currency }}</span>
+      </div>
+    {% endif %}
+
+    <!-- Order Total -->
+    <div class="summary-line total" style="padding-top: 1rem; border-top: 1px solid rgba(47,47,47,0.1);">
+      <span>{% trans "Total" %}</span>
+      <span style="font-size: 1.25rem;">
+        {% if order_total.is_tax_known %}
+          {{ order_total.incl_tax|currency:basket.currency }}
+        {% else %}
+          {{ order_total.excl_tax|currency:basket.currency }}
+        {% endif %}
+      </span>
+    </div>
+
+    {% if not order_total.is_tax_known %}
+      <p class="summary-note">{% trans "Taxes calculated at checkout." %}</p>
+    {% endif %}
+
+  {% endwith %}
+</div>

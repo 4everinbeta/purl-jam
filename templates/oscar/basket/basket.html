@@ -1,0 +1,28 @@
+{% extends "oscar/layout.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Your Cart" %} | {{ block.super }}
+{% endblock %}
+
+{% block mini_basket %}{% endblock %}
+
+{% block content_wrapper %}
+<section class="section checkout">
+  <div class="container">
+    <div class="section-heading">
+      <h2>{% trans "Your Cart" %}</h2>
+    </div>
+
+    {% include 'oscar/basket/partials/basket_content.html' %}
+  </div>
+</section>
+{% endblock content_wrapper %}
+
+{% block onbodyload %}
+  {{ block.super }}
+  var options = {
+    'basketURL': '{% url 'basket:summary' %}'
+  };
+  oscar.basket.init(options);
+{% endblock %}

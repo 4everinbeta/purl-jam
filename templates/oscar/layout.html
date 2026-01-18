@@ -1,0 +1,114 @@
+{% extends "oscar/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load basket_tags %}
+
+{% block layout %}
+<!-- Navigation -->
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="/" aria-label="Purl Jam home">
+      <img src="{% static 'brand/logo_set.png' %}" alt="Purl Jam logo" />
+    </a>
+    <button class="icon-button mobile-toggle" id="mobile-toggle" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 6h18M3 12h18M3 18h18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+    </button>
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <a href="/">{% trans "Home" %}</a>
+      <a href="/shop/">{% trans "Shop" %}</a>
+      <a href="/#classes">{% trans "Classes" %}</a>
+      <a href="/#about">{% trans "About" %}</a>
+      <a href="/#blog">{% trans "Blog" %}</a>
+      <a href="/#contact">{% trans "Contact" %}</a>
+    </nav>
+    <div class="nav-actions">
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.4" />
+          <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+        </svg>
+        <form action="/shop/" method="get">
+          <input id="nav-search" name="q" type="search" placeholder="{% trans 'Search yarn, tools, or fibers' %}" aria-label="{% trans 'Search products' %}" />
+        </form>
+      </div>
+      <a class="button button-secondary" href="/#classes">{% trans "Book a Class" %}</a>
+      <a class="icon-button cart-button" href="{% url 'basket:summary' %}" aria-label="{% trans 'View cart' %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M6 6h14l-1.5 9H8L6 6zM6 6H4M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        {% basket_add_item as basket %}
+        <span class="cart-count">{{ basket.num_items }}</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+  {% block content_wrapper %}
+  <section class="section shop">
+    <div class="container">
+      {% include "oscar/partials/alert_messages.html" %}
+      {% block breadcrumbs %}{% endblock %}
+      {% block header %}
+        {% if headertext %}
+        <div class="section-heading">
+          <h2>{% block headertext %}{% endblock %}</h2>
+        </div>
+        {% endif %}
+      {% endblock %}
+      {% block subnavigation %}{% endblock %}
+      <div id="content_inner">{% block content %}{% endblock %}</div>
+    </div>
+  </section>
+  {% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h3>Purl Jam</h3>
+      <p>{% trans "Modern fiber studio" %} &middot; Asheville, NC</p>
+      <p>hello@purljam.com &middot; (828) 555-0184</p>
+    </div>
+    <div>
+      <h4>{% trans "Explore" %}</h4>
+      <a href="/">{% trans "Home" %}</a>
+      <a href="/shop/">{% trans "Shop" %}</a>
+      <a href="/#classes">{% trans "Classes" %}</a>
+      <a href="/#about">{% trans "About" %}</a>
+    </div>
+    <div>
+      <h4>{% trans "Community" %}</h4>
+      <a href="/#blog">{% trans "Blog" %}</a>
+      <a href="/#contact">{% trans "Contact" %}</a>
+      <a href="/#newsletter">{% trans "Newsletter" %}</a>
+    </div>
+    <div>
+      <h4>{% trans "Follow" %}</h4>
+      <a href="#">Instagram</a>
+      <a href="#">Pinterest</a>
+      <a href="#">TikTok</a>
+    </div>
+  </div>
+  <p class="footer-note">&copy; 2024 Purl Jam. {% trans "All rights reserved." %}</p>
+</footer>
+
+<script>
+  // Mobile navigation toggle
+  const mobileToggle = document.getElementById("mobile-toggle");
+  const navLinks = document.getElementById("nav-links");
+  mobileToggle?.addEventListener("click", () => {
+    navLinks?.classList.toggle("is-open");
+  });
+</script>
+{% endblock %}

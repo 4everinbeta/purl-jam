@@ -1,0 +1,65 @@
+{% load display_tags %}
+{% load i18n %}
+{% load image_tags %}
+{% load currency_filters %}
+{% load purchase_info_tags %}
+{% load basket_tags %}
+
+{% purchase_info_for_product request product as session %}
+
+{% block product %}
+<article class="product-card">
+  {% block product_image %}
+  <a href="{{ product.get_absolute_url }}">
+    {% with image=product.primary_image %}
+      {% oscar_thumbnail image.original "300x200" upscale=True crop="center" as thumb %}
+      <img src="{{ thumb.url }}" alt="{{ product.get_title }}" />
+    {% endwith %}
+  </a>
+  {% endblock %}
+
+  <div class="product-body">
+    {% block product_title %}
+    <h3>
+      <a href="{{ product.get_absolute_url }}" title="{{ product.get_title }}">
+        {{ product.get_title }}
+      </a>
+    </h3>
+    {% endblock %}
+
+    {% block product_description %}
+    {% if product.description %}
+    <p>{{ product.description|truncatewords:12 }}</p>
+    {% endif %}
+    {% endblock %}
+
+    {% block product_price %}
+    <div class="cart-item-row">
+      {% if session.price.exists %}
+        {% if session.price.excl_tax == 0 %}
+          <span class="price">{% trans "Free" %}</span>
+        {% elif session.price.is_tax_known %}
+          <span class="price">{{ session.price.incl_tax|currency:session.price.currency }}</span>
+        {% else %}
+          <span class="price">{{ session.price.excl_tax|currency:session.price.currency }}</span>
+        {% endif %}
+      {% endif %}
+      <a class="button button-secondary" href="{{ product.get_absolute_url }}">{% trans "View" %}</a>
+    </div>
+    {% endblock %}
+
+    {% block product_add_to_basket %}
+    {% if session.availability.is_available_to_buy and not product.is_parent and not product.has_options %}
+      {% basket_form request product 'single' as basket_form %}
+      <form action="{% url 'basket:add' pk=product.pk %}" method="post">
+        {% csrf_token %}
+        {{ basket_form.quantity }}
+        <button type="submit" class="button">{% trans "Add to Cart" %}</button>
+      </form>
+    {% elif not session.availability.is_available_to_buy %}
+      <span class="button button-secondary" style="opacity: 0.5; cursor: not-allowed;">{% trans "Out of Stock" %}</span>
+    {% endif %}
+    {% endblock %}
+  </div>
+</article>
+{% endblock %}
