@@ -1,42 +1,47 @@
 # Purl Jam Railway Deployment - Session State
 
 **Date:** 2026-01-18
-**Last Commit:** 8dc4fd1 - Fix 500 error on product detail page by correcting recently_viewed_products tag usage
+**Last Commit:** bac5dd8 - Update logo size, transparency, and refine favicon
 
 ## Problem Summary
 User reported:
-1. Favicon should be the "P" mark from the top-right corner of `logo_set.png`.
-2. Images were not loading on the "Shop the yarn wall" page.
-3. 500 error on product detail pages (e.g. `minimalist-hooks_12`).
+1. Header logo should be larger and have a transparent background to overlay nicely.
+2. Favicon should be "more like @static/brand/fav-icon.png" (interpreted as: transparent background, refined icon).
 
 ## Issues Fixed (in order)
 
-### 1-9. Previous Fixes (See history below)
-- Health check, ALLOWED_HOSTS, container restart, template syntax, shop pages logo, homepage logo/favicon, product population, favicon image extraction, media serving.
+### 1-10. Previous Fixes (See history below)
+- Health check, ALLOWED_HOSTS, container restart, template syntax, shop pages logo, homepage logo/favicon, product population, favicon image extraction, media serving, detail page 500 error.
 
-### 10. Product Detail Page 500 Error (FIXED)
-- **Problem:** `TemplateSyntaxError` in `templates/oscar/catalogue/detail.html`. The `recently_viewed_products` tag was being used as an assignment tag (`as recent_products`), but it is an inclusion tag.
+### 11. Header Logo Visuals (FIXED)
+- **Problem:** Logo was too small (42px) and had a white/cream background that didn't blend perfectly.
 - **Solution:**
-    1.  Removed incorrect usage in `detail.html`.
-    2.  Created `templates/oscar/customer/history/recently_viewed_products.html` to override the default inclusion template and match the site's styling.
-    3.  Updated `detail.html` to simply call `{% recently_viewed_products current_product=product %}`.
-- **Commit:** 8dc4fd1 (JUST PUSHED)
+    1.  Used Python script to detect background color of `Purl_Jam_Primary_Logo.png` and convert it to transparent.
+    2.  Updated `static/styles.css` to increase logo height to `80px`.
+- **Commit:** bac5dd8
+
+### 12. Favicon Refinement (FIXED)
+- **Problem:** Previous favicon was a simple crop with a background color.
+- **Solution:** Re-processed `logo_set.png` to extract the "P" logo, remove the background color (making it transparent), trim whitespace, and center it in a square icon.
+- **Commit:** bac5dd8 (JUST PUSHED)
 
 ## Current State
 - Code committed and pushed.
 - Deployment in progress.
 - **Expectation:**
-    - Product detail pages should load (HTTP 200).
-    - Images should appear (due to media serving fix in previous commit).
-    - "Recently Viewed" section should look correct.
+    - Header logo is larger (~80px) and blends seamlessly with the header.
+    - Favicon is a clean, transparent "P" icon.
 
 ## Files Modified
 
-### `/home/rbrown/workspace/purl-jam/templates/oscar/catalogue/detail.html`
-- Corrected tag usage.
+### `/home/rbrown/workspace/purl-jam/static/brand/Purl_Jam_Primary_Logo.png`
+- Processed to transparency.
 
-### `/home/rbrown/workspace/purl-jam/templates/oscar/customer/history/recently_viewed_products.html` (NEW)
-- Custom template for the inclusion tag.
+### `/home/rbrown/workspace/purl-jam/static/brand/favicon.png`
+- Re-generated with transparency and better cropping.
+
+### `/home/rbrown/workspace/purl-jam/static/styles.css`
+- Increased `.logo img` height.
 
 ## Next Steps
-- Verify at: https://purl-jam-production.up.railway.app/shop/catalogue/minimalist-hooks_12/
+- Verify visual changes at: https://purl-jam-production.up.railway.app

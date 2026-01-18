@@ -18,6 +18,7 @@ if "healthcheck.railway.app" not in ALLOWED_HOSTS and "*" not in ALLOWED_HOSTS:
 # Application definition
 INSTALLED_APPS = [
     "whitenoise.runserver_nostatic",
+    "sorl.thumbnail",
 ] + list(OSCAR_INSTALLED_APPS)
 
 MIDDLEWARE = [
