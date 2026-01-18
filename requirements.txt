@@ -6,4 +6,5 @@ whitenoise==6.6.0
 gunicorn==21.2.0
 Pillow==10.2.0
 pycountry==23.12.11
-sorl-thumbnail>=12.9.0
+sorl-thumbnail<12.10
+setuptools
