@@ -196,11 +196,14 @@ def populate():
 
         # Handle Image (Check if exists on disk, restore if missing)
         image_needs_restore = False
-        if product.primary_image:
-             if not os.path.exists(product.primary_image.original.path):
-                 print(f"  - Image record exists but file is missing: {product.primary_image.original.path}")
+        primary_image = product.primary_image()
+        
+        if primary_image:
+             if not os.path.exists(primary_image.original.path):
+                 print(f"  - Image record exists but file is missing: {primary_image.original.path}")
                  image_needs_restore = True
-                 product.primary_image.delete() 
+                 # Delete the broken record
+                 primary_image.delete() 
         else:
              image_needs_restore = True
 
