@@ -45,8 +45,7 @@
             stroke-linejoin="round"
           />
         </svg>
-        {% basket_add_item as basket %}
-        <span class="cart-count">{{ basket.num_items }}</span>
+        <span class="cart-count">{{ request.basket.num_items }}</span>
       </a>
     </div>
   </div>
