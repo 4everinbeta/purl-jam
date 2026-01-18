@@ -1,63 +1,49 @@
 # Purl Jam Railway Deployment - Session State
 
 **Date:** 2026-01-18
-**Last Commit:** 6f27958 - Update logo and favicon to use Purl_Jam_Primary_Logo.png
+**Last Commit:** 1d5a63a - Fix homepage logo/favicon and populate products in DB
 
 ## Problem Summary
-Django e-commerce app (django-oscar) was building successfully on Railway but returning 502 errors initially. This was fixed, but then 500 errors were observed on the storefront due to a template error. After fixing functionality, visual assets (logo and favicon) needed correction.
+User reported:
+1. Logo on homepage was still incorrect (old one).
+2. Favicon was missing on homepage.
+3. "Shop the yarn wall" page was empty (no products), while homepage had mockup products.
 
 ## Issues Fixed (in order)
 
-### 1. Health Check Timeout (FIXED)
-- **Problem:** Health checks timing out after 5 minutes, no logs visible
-- **Root Cause:** Logs not being captured by Railway
-- **Solution:** Rewrote `start.sh` to redirect all output to stderr with timestamps
-- **Commit:** dbb260d
+### 1-5. Previous Fixes (See history below)
+- Health check, ALLOWED_HOSTS, container restart, template syntax, shop pages logo/favicon.
 
-### 2. ALLOWED_HOSTS Rejection (FIXED)
-- **Problem:** Health checks returning HTTP 400 "Invalid HTTP_HOST header: 'healthcheck.railway.app'"
-- **Root Cause:** Django rejecting Railway's health check requests
-- **Solution:** Modified `purljam/settings.py` to automatically add `healthcheck.railway.app` to ALLOWED_HOSTS
-- **Commit:** d230583
+### 6. Homepage Visuals (FIXED)
+- **Problem:** `templates/oscar/index.html` (homepage) is a standalone template and wasn't inheriting the fixes made to `layout.html`.
+- **Solution:** Manually updated `index.html` to use `Purl_Jam_Primary_Logo.png` and added the favicon link.
+- **Commit:** 1d5a63a
 
-### 3. Container Stopping After Health Check (FIXED)
-- **Problem:** Health checks passing (HTTP 200) but container stopping 3 seconds later, causing 502 errors
-- **Root Cause:** `restartPolicyType = "never"` in `railway.toml` preventing container from staying running
-- **Solution:** Removed `restartPolicyType = "never"` from `railway.toml`
-- **Commit:** 4d353e2
-
-### 4. Template Syntax Error (FIXED)
-- **Problem:** Application returning HTTP 500 on pages using `layout.html`.
-- **Root Cause:** Invalid template tag `{% basket_add_item as basket %}` in `templates/oscar/layout.html`.
-- **Solution:** Replaced with `{{ request.basket.num_items }}`.
-- **Commit:** 53a3d75
-
-### 5. Incorrect Logo and Missing Favicon (FIXED)
-- **Problem:** Upper right logo was using `logo_set.png` (incorrect) and favicon was missing.
-- **Solution:** Updated `templates/oscar/layout.html` to use `Purl_Jam_Primary_Logo.png` and added favicon link in `templates/oscar/base.html`.
-- **Commit:** 6f27958 (JUST PUSHED)
+### 7. Missing Products in Shop (FIXED)
+- **Problem:** The shop relies on the database, which was empty. The homepage used hardcoded JS mockups.
+- **Solution:** Created `populate_products.py` to seed the database with the products defined in `app.js`, including images.
+- **Implementation:** Added `python populate_products.py` to `start.sh` so it runs on deployment.
+- **Commit:** 1d5a63a (JUST PUSHED)
 
 ## Current State
-- Code changes committed and pushed to Railway.
-- Waiting for deployment to complete (approx 2-3 mins).
-- Application should be fully functional and visually correct.
+- Code committed and pushed.
+- Deployment in progress.
+- **Expectation:**
+    - Homepage will have correct logo and favicon.
+    - Shop page (`/shop/`) will list products with images.
+    - Product details and cart should work.
 
 ## Files Modified
 
-### `/home/rbrown/workspace/purl-jam/templates/oscar/layout.html`
-- Updated logo `src` to `{% static 'brand/Purl_Jam_Primary_Logo.png' %}`.
+### `/home/rbrown/workspace/purl-jam/templates/oscar/index.html`
+- Updated logo src and added favicon link.
 
-### `/home/rbrown/workspace/purl-jam/templates/oscar/base.html`
-- Added favicon `<link>` tag.
+### `/home/rbrown/workspace/purl-jam/populate_products.py` (NEW)
+- Script to populate `Product`, `StockRecord`, and `ProductImage` from the hardcoded list in `app.js`.
 
 ### `/home/rbrown/workspace/purl-jam/start.sh`
-- Complete rewrite with stderr logging
-
-### `/home/rbrown/workspace/purl-jam/purljam/settings.py`
-- Auto-adds `healthcheck.railway.app` to ALLOWED_HOSTS
-
-### `/home/rbrown/workspace/purl-jam/railway.toml`
-- Removed `restartPolicyType = "never"` line
+- Added execution of `populate_products.py`.
 
 ## Next Steps
-- Verify visual changes at: https://purl-jam-production.up.railway.app
+- Verify at: https://purl-jam-production.up.railway.app
+- Check "Shop the yarn wall" button functionality.
